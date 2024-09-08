@@ -34,7 +34,7 @@ const DashboardLayout = () => {
     }
 
     const logout = () => {
-        console.log('Logging out!');
+        console.log('Logging out');
         setToken('');
     };
 
