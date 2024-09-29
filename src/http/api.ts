@@ -1,16 +1,37 @@
-import axios from 'axios';
+import axios from "axios";
+import useTokenStore from "@/store";
 
 const api = axios.create({
-    baseURL: 'http://localhost:5513',
-    headers: {
-        'Content-Type': 'application/json',
-    },
+  baseURL: "http://localhost:5513",
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-export const login = async (data: { email: string, password: string }) =>
-    api.post('/api/users/login', data);
+api.interceptors.request.use((config) => {
+  const token = useTokenStore.getState().token;
 
-export const register = async (data: { name: string, email: string, password: string }) =>
-    api.post('/api/users/register', data);
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
 
-export const getBooks = async () => api.get('/api/books');
+  return config;
+});
+
+export const login = async (data: { email: string; password: string }) =>
+  api.post("/api/users/login", data);
+
+export const register = async (data: {
+  name: string;
+  email: string;
+  password: string;
+}) => api.post("/api/users/register", data);
+
+export const getBooks = async () => api.get("/api/books");
+
+export const createBook = async (data: FormData) =>
+  api.post("/api/books", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
